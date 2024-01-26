@@ -1,9 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import pizzas from "./routers/pizzas.js";
-import orders from "./routers/orders.js";
-import customers from "./routers/customers.js";
+import pizzas from "./controllers/pizzas.js";
 
 dotenv.config();
 
@@ -46,8 +44,6 @@ mongoose.connect(
 );
 const db = mongoose.connection;
 
-let db_status = "MongoDB connection not successful.";
-
 db.on("error", console.error.bind(console, "connection error:"));
 db.once(
   "open",
@@ -63,10 +59,8 @@ app.get("/status", (request, response) => {
 // Moving the logging middleware to this location so that the logs on render.com are not filled up with status checks
 app.use(logging);
 
-// Use the routers
+// Use the controllers
 app.use("/pizzas", pizzas);
-app.use("/orders", orders);
-app.use("/customers", customers);
 
 const PORT = process.env.PORT || 4040;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
