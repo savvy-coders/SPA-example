@@ -23,8 +23,6 @@ function render(state = store.home) {
     ${main(state)}
     ${footer()}
   `;
-
-  router.updatePageLinks();
 }
 
 router.hooks({
@@ -98,6 +96,15 @@ router.hooks({
   },
   after: async (match) => {
     const view = match?.data?.view ? camelCase(match.data.view) : "home";
+
+    // Add menu toggle to bars icon in nav bar which is rendered on every page
+    document
+      .querySelector(".fa-bars")
+      .addEventListener("click", () =>
+        document.querySelector("nav > ul").classList.toggle("hidden--mobile")
+      );
+
+    router.updatePageLinks();
 
     switch (view) {
       case "home":
@@ -188,12 +195,6 @@ router.hooks({
           });
         break;
     }
-    // Add menu toggle to bars icon in nav bar which is rendered on every page
-    document
-      .querySelector(".fa-bars")
-      .addEventListener("click", () =>
-        document.querySelector("nav > ul").classList.toggle("hidden--mobile")
-      );
   }
 });
 
