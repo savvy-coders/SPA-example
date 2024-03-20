@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import Pizza from '../models/pizza.js';
+import Pizza from '../models/Pizza.js';
 
 const router = Router();
 
