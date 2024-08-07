@@ -5,10 +5,12 @@ import { camelCase } from "lodash";
 import { hooks as homeHooks } from "./views/home";
 import { hooks as pizzaHooks } from "./views/pizza";
 import { hooks as orderHooks } from "./views/order";
+import { hooks as headerHooks } from "./components/header";
 
 const router = new Navigo("/");
 
-function render(viewName = 'home') {
+function render(match) {
+  const viewName = match?.route?.name ? camelCase(match.route?.name) : "home";
 
   const state = store[viewName];
 
@@ -23,32 +25,29 @@ function render(viewName = 'home') {
 router.hooks({
   already: async (match) => {
     console.info("Global router.hook already execution");
-    const view = match?.data?.view ? camelCase(match.data.view) : "home";
 
-    render(store[view]);
+    render(match);
+
+    headerHooks.after(match);
   },
   after: async (match) => {
     console.info("Global router.hook after execution");
-    // Add menu toggle to bars icon in nav bar which is rendered on every page
-    document
-      .querySelector(".fa-bars")
-      .addEventListener("click", () =>
-        document.querySelector("nav > ul").classList.toggle("hidden--mobile")
-      );
+
+    headerHooks.after(match);
 
     router.updatePageLinks();
   }
 });
 
-router.notFound(render('viewNotFound'));
+router.notFound(render);
 
 router
   .on({
-    "/": { uses: render(), hooks: homeHooks },
-    "/home": { uses: render(), hooks: homeHooks },
-    "/about-me": { uses: render('aboutMe') },
-    "/order": { uses: render('order'), hooks: orderHooks },
-    "/pizza": { uses: render('pizza'), hooks: pizzaHooks }
+    "/": { uses: render, hooks: homeHooks },
+    "/home": { uses: render, hooks: homeHooks },
+    "/about-me": { uses: render },
+    "/order": { uses: render, hooks: orderHooks },
+    "/pizza": { uses: render, hooks: pizzaHooks }
   })
   .resolve();
 

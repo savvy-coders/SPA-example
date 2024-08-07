@@ -3,6 +3,7 @@ import "../assets/css/order.css";
 import { toppingInput } from "../components";
 import router from "../";
 import * as store from "../store";
+import axios from "axios";
 
 export default state => {
   return html`
@@ -48,45 +49,52 @@ export default state => {
   `;
 }
 
-export const hooks = {
-  async after(match) {
-    document.querySelector("form").addEventListener("submit", async event => {
-      event.preventDefault();
+function formHandler() {
+  document.querySelector("form").addEventListener("submit", async event => {
+    event.preventDefault();
 
-      const inputList = event.target.elements;
-      console.log('matsinet-inputList', inputList);
+    const inputList = event.target.elements;
+    console.log('matsinet-inputList', inputList);
 
-      const toppings = [];
-      for (let input of inputList.toppings) {
-        if (input.checked) {
-          toppings.push(input.value);
-        }
+    const toppings = [];
+    for (let input of inputList.toppings) {
+      if (input.checked) {
+        toppings.push(input.value);
       }
+    }
 
-      const requestData = {
-        crust: inputList.crust.value,
-        cheese: inputList.cheese.value,
-        sauce: inputList.sauce.value,
-        toppings: toppings,
-        customer: {
-          name: inputList['customer-name'].value,
-          postalCode: inputList['customer-postal-code'].value
-        },
-      };
+    const requestData = {
+      crust: inputList.crust.value,
+      cheese: inputList.cheese.value,
+      sauce: inputList.sauce.value,
+      toppings: toppings,
+      customer: {
+        name: inputList['customer-name'].value,
+        postalCode: inputList['customer-postal-code'].value
+      },
+    };
 
-      await axios
-        .post(`${PIZZA_PLACE_API_URL}/pizzas`, requestData)
-        .then(response => {
-          // Push the new pizza to the store so we don't have to reload from the API
-          store.pizza.pizzas.push(response.data);
+    await axios
+      .post(`${process.env.PIZZA_PLACE_API_URL}/pizzas`, requestData)
+      .then(response => {
+        // Push the new pizza to the store so we don't have to reload from the API
+        store.pizza.pizzas.push(response.data);
 
-          router.navigate("/pizza");
-        })
-        .catch(error => {
-          console.error("Error storing new pizza", error);
+        router.navigate("/pizza");
+      })
+      .catch(error => {
+        console.error("Error storing new pizza", error);
 
-          router.navigate('/order');
-        });
-    });
+        router.navigate('/order');
+      });
+  });
+}
+
+export const hooks = {
+  already(match) {
+    formHandler();
+  },
+  after(match) {
+    formHandler();
   }
 }

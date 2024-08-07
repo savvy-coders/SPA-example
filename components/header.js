@@ -7,3 +7,14 @@ export default state => {
     </header>
   `;
 }
+
+export const hooks = {
+  async after(match) {
+    // Add menu toggle to bars icon in nav bar which is rendered on every page
+    document
+      .querySelector(".fa-bars")
+      .addEventListener("click", () =>
+        document.querySelector("nav > ul").classList.toggle("hidden--mobile")
+      );
+  }
+}

@@ -16,6 +16,16 @@ export default state => {
   `;
 }
 
+function actionButtonHandler() {
+  document.getElementById('action-button').addEventListener('click', event => {
+    event.preventDefault();
+
+    alert('Hello! You clicked the action button! Redirecting to the pizza view');
+
+    router.navigate('/pizza');
+  });
+}
+
 export const hooks = {
   async before(done, match) {
     try {
@@ -52,14 +62,11 @@ export const hooks = {
       done();
     }
   },
+  async already(match) {
+    actionButtonHandler()
+  },
   async after(match) {
-    document.getElementById('action-button').addEventListener('click', event => {
-      event.preventDefault();
-
-      alert('Hello! You clicked the action button! Redirecting to the pizza view');
-
-      router.navigate('/pizza');
-    });
+    actionButtonHandler()
   }
 }
 
