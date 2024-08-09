@@ -9,7 +9,7 @@ const app = express();
 
 // Logging Middleware Declaration
 const logging = (request, response, next) => {
-  console.log(`${request.method} ${request.url} ${Date.now()}`);
+  console.log(`${request.method} ${request.url} ${new Date().toLocaleString("en-us")}`);
   next();
 };
 
@@ -37,7 +37,7 @@ const MONGODB = process.env.MONGODB ?? "mongodb://localhost/pizza";
 // Database connection
 mongoose.connect(
   MONGODB,
-  { 
+  {
     useNewUrlParser: true,
     useUnifiedTopology: true
   }
