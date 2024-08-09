@@ -12,3 +12,9 @@ export default navItems => {
     </nav>
   `;
 }
+
+export function addNavButtonEventHandler() {
+  document.querySelector(".fa-bars").addEventListener("click", () => {
+    document.querySelector("nav > ul").classList.toggle("hidden--mobile");
+  });
+}

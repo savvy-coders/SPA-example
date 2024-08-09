@@ -1,8 +1,10 @@
-import { header, nav, main, footer } from "./components";
+import { header, nav, main, footer, spinner } from "./components";
 import * as store from "./store";
 import Navigo from "navigo";
 import { camelCase } from "lodash";
 import axios from "axios";
+import { showSpinner } from "./components/spinner";
+import { addNavButtonEventHandler } from "./components/nav";
 
 let PIZZA_PLACE_API_URL;
 
@@ -20,6 +22,7 @@ function render(state = store.home) {
   document.querySelector("#root").innerHTML = `
     ${header(state)}
     ${nav(store.nav)}
+    ${spinner(store.spinner)}
     ${main(state)}
     ${footer()}
   `;
@@ -29,6 +32,10 @@ router.hooks({
   // Use object deconstruction to store the data and (query)params from the Navigo match parameter
   // Runs before a route handler that the match is hasn't been visited already
   before: async (done, match) => {
+    console.info('router before hook has fired!');
+
+    showSpinner();
+
     // Check if data is null, view property exists, if not set view equal to "home"
     // using optional chaining (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining)
     const view = match?.data?.view ? camelCase(match.data.view) : "home";
@@ -55,7 +62,7 @@ router.hooks({
           const city = geoResponse.data[0];
 
           const weatherResponse = await axios.get(`https://api.openweathermap.org/data/2.5/weather?appid=${process.env.OPEN_WEATHER_MAP_API_KEY}&q=${city.name},${city.state}`);
-          console.log('matsinet- weatherResponse',  weatherResponse);
+          console.log('matsinet- weatherResponse', weatherResponse);
 
           store.home.weather = {
             city: weatherResponse.data.name,
@@ -78,7 +85,7 @@ router.hooks({
           store.pizza.pizzas = response.data;
 
           done();
-        } catch(error) {
+        } catch (error) {
           console.log("Error retrieving pizza data", error);
 
           done();
@@ -90,19 +97,24 @@ router.hooks({
   },
   // Runs before a route handler that is already the match is already being visited
   already: async (match) => {
+    console.info('router already hook has fired!');
     const view = match?.data?.view ? camelCase(match.data.view) : "home";
 
     render(store[view]);
+
+    addNavButtonEventHandler();
+  },
+  leave: async (done, match) => {
+    console.info('router leave hook has fired!');
+
+    done();
   },
   after: async (match) => {
+    console.info('router after hook has fired!');
     const view = match?.data?.view ? camelCase(match.data.view) : "home";
 
     // Add menu toggle to bars icon in nav bar which is rendered on every page
-    document
-      .querySelector(".fa-bars")
-      .addEventListener("click", () =>
-        document.querySelector("nav > ul").classList.toggle("hidden--mobile")
-      );
+    addNavButtonEventHandler();
 
     router.updatePageLinks();
 
@@ -195,6 +207,8 @@ router.hooks({
           });
         break;
     }
+
+    showSpinner(false);
   }
 });
 
