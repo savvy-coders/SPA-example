@@ -4,3 +4,4 @@ export { default as main } from "./main";
 export { default as footer } from "./footer";
 export { default as navItem } from "./navItem";
 export { default as toppingInput } from "./toppingInput";
+export { default as spinner } from "./spinner";
