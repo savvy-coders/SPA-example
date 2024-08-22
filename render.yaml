@@ -1,0 +1,29 @@
+# Exported from Render on 2024-08-22T20:26:26Z
+services:
+  - type: web
+    name: SPA-example
+    runtime: static
+    repo: https://github.com/savvy-coders/SPA-example
+    envVars:
+    - key: OPEN_WEATHER_MAP_API_KEY
+      sync: false
+    - key: PIZZA_PLACE_API_URL
+      sync: false
+    buildCommand: npm run parcel-build
+    staticPublishPath: dist
+    routes:
+    - type: redirect
+      source: /*
+      destination: /index.html
+  - type: web
+    name: sc-pizza-api
+    runtime: node
+    repo: https://github.com/savvy-coders/SPA-example
+    plan: free
+    envVars:
+    - key: MONGODB
+      sync: false
+    region: ohio
+    buildCommand: npm install
+    startCommand: node server/app.js
+version: "1"

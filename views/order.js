@@ -11,10 +11,6 @@ export default state => {
         <input type="text" name="customer-name" id="customer-name" placeholder="Enter Name" required/>
       </div>
       <div>
-        <label for="customer-postal-code">Customer Postal Code:</label>
-        <input type="text" name="customer-postal-code" id="customer-postal-code" placeholder="Enter Postal Code" required/>
-      </div>
-      <div>
         <label for="crust">Crust:</label>
         <select id="crust" name="crust" required>
           <option value="">Select a Crust</option>
