@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Customer from "./customer.js";
+import Customer from "./Customer.js";
 
 const pizzaSchema = new mongoose.Schema({
   customer: {
