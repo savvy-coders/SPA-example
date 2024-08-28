@@ -150,9 +150,7 @@ router.hooks({
             cheese: inputList.cheese.value,
             sauce: inputList.sauce.value,
             toppings: toppings,
-            customer: {
-              name: inputList['customer-name'].value
-            },
+            customer: inputList.customer.value
           };
 
           await axios
