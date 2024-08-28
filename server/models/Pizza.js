@@ -12,7 +12,7 @@ const pizzaSchema = new mongoose.Schema({
   crust: {
     type: String,
     required: true,
-    enum: ["Thin", "Hand Tossed", "Chicago", "Deep Dish"]
+    enum: ["Thin", "Hand Tossed", "Chicago", "Deep Dish", "thin", "chicago", "deep-dish", "hella-thick", "califlower"]
   },
   cheese: {
     type: String,
