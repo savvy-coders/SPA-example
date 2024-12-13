@@ -3,6 +3,7 @@ import * as store from "./store";
 import Navigo from "navigo";
 import { camelCase } from "lodash";
 import axios from "axios";
+import { Canvas, PencilBrush } from "fabric";
 import { showSpinner } from "./components/spinner";
 import { addNavButtonEventHandler } from "./components/nav";
 import { addDeleteButtonHandler } from "./views/pizza";
@@ -115,6 +116,7 @@ router.hooks({
   after: async (match) => {
     console.info('router after hook has fired!');
     const view = match?.data?.view ? camelCase(match.data.view) : "home";
+    console.log('matsinet-index.js:119-view:', view);
 
     // Add menu toggle to bars icon in nav bar which is rendered on every page
     addNavButtonEventHandler();
@@ -172,6 +174,27 @@ router.hooks({
         break;
       case "pizza":
         addDeleteButtonHandler();
+        break;
+      case "fabricDemo":
+        console.log("fabric view after render fired");
+
+        // Initialize fabric
+        const canvas = new Canvas(
+          document.getElementById("fabricCanvas"),
+          {
+            // Enable drawing mode
+            isDrawingMode: true,
+            height: 400,
+            width: 600
+          }
+        );
+
+        canvas.freeDrawingBrush = new PencilBrush(canvas);
+
+        document.getElementById("fabricExport").addEventListener("click", event => {
+          const json = canvas.toJSON();
+          console.log('matsinet-index.js:196-json:', json);
+        })
         break;
     }
 
