@@ -192,8 +192,14 @@ router.hooks({
         canvas.freeDrawingBrush = new PencilBrush(canvas);
 
         document.getElementById("fabricExport").addEventListener("click", event => {
+          event.preventDefault();
           const json = canvas.toJSON();
           console.log('matsinet-index.js:196-json:', json);
+        })
+
+        document.getElementById("fabricClear").addEventListener("click", event => {
+          event.preventDefault();
+          const json = canvas.clear();
         })
         break;
     }

@@ -9,8 +9,6 @@ export default state => {
 }
 
 export function showSpinner(isShown = true) {
-  console.info(`spinner component showSpinner method has fired with the value: ${isShown}!`);
-
   const spinnerComponent = document.getElementById('spinner-component');
 
   if (spinnerComponent && isShown) spinnerComponent.classList.add('show-spinner');

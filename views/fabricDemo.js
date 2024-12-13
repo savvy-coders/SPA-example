@@ -7,6 +7,7 @@ export default state => {
     </section>
     <section style="margin: 2rem;">
       <button id="fabricExport">Export</button>
+      <button id="fabricClear">Clear</button>
     </section>
   `;
 }
