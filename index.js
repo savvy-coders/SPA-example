@@ -3,6 +3,7 @@ import * as store from "./store";
 import Navigo from "navigo";
 import { camelCase } from "lodash";
 import axios from "axios";
+import { Canvas, PencilBrush } from "fabric";
 import { showSpinner } from "./components/spinner";
 import { addNavButtonEventHandler } from "./components/nav";
 import { addDeleteButtonHandler } from "./views/pizza";
@@ -92,6 +93,17 @@ router.hooks({
           done();
         }
         break;
+      case "leaflet":
+        try {
+          const response = await axios
+            .get(`https://developer.nps.gov/api/v1/parks?limit=40&api_key=${process.env.NPS_API_KEY}`);
+          store.leaflet.parks = response.data.data;
+          done();
+        } catch (error) {
+          console.log("Error retrieving map data", error);
+
+          done();
+        }
       default:
         done();
     }
@@ -115,6 +127,7 @@ router.hooks({
   after: async (match) => {
     console.info('router after hook has fired!');
     const view = match?.data?.view ? camelCase(match.data.view) : "home";
+    console.log('matsinet-index.js:119-view:', view);
 
     // Add menu toggle to bars icon in nav bar which is rendered on every page
     addNavButtonEventHandler();
@@ -172,6 +185,61 @@ router.hooks({
         break;
       case "pizza":
         addDeleteButtonHandler();
+        break;
+      case "fabricDemo":
+        console.log("fabric view after render fired");
+
+        // Initialize fabric
+        const canvas = new Canvas(
+          document.getElementById("fabricCanvas"),
+          {
+            // Enable drawing mode
+            isDrawingMode: true,
+            height: 400,
+            width: 600
+          }
+        );
+
+        canvas.freeDrawingBrush = new PencilBrush(canvas);
+
+        document.getElementById("fabricExport").addEventListener("click", event => {
+          event.preventDefault();
+          const json = canvas.toJSON();
+          console.log('matsinet-index.js:196-json:', json);
+        })
+
+        document.getElementById("fabricClear").addEventListener("click", event => {
+          event.preventDefault();
+          const json = canvas.clear();
+        })
+        break;
+      case "leaflet":
+        // Initialize the map DOM element, set the focus point and zoom level
+        map = L.map('map').setView([51.505, -0.09], 13);
+
+        // Initialize the background (earth) layer so that markers appear to belong somewhere
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        // Create a group of markers so we can get their outside bounding box
+        var markerArray = [];
+
+        // Iterate of the parks, create a marker and add it to the marker group
+        store.leaflet.parks.forEach(park => {
+          // console.log(`${park.name} is located at ${park.latitude}, ${park.longitude}`);
+
+          const marker = L.marker([park.latitude, park.longitude])
+            .bindPopup(`${park.name}<br>${park.addresses[0].city}, ${park.addresses[0].stateCode}`);
+
+          markerArray.push(marker);
+        });
+
+        // Add marker group to the map so that it is displayed
+        const group = L.featureGroup(markerArray).addTo(map);
+        // Force the map to zoom to the bounds of the group
+        map.fitBounds(group.getBounds());
         break;
     }
 

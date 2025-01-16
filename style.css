@@ -62,6 +62,8 @@ dialog>pre {
   animation: l1 4s infinite linear;
 }
 
+#map { height: 600px; }
+
 @keyframes l1 {
   100% {
     background-size: 100%
