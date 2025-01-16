@@ -7,8 +7,8 @@ export default state => {
     <form id="order" method="POST" action="">
       <h2>Order a pizza</h2>
       <div>
-        <label for="customer-name">Customer Name:</label>
-        <input type="text" name="customer-name" id="customer-name" placeholder="Enter Name" required/>
+        <label for="customer">Customer Name:</label>
+        <input type="text" name="customer" id="customer" placeholder="Enter Name" required/>
       </div>
       <div>
         <label for="crust">Crust:</label>
