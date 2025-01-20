@@ -2,7 +2,8 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import pizzas from "./controllers/pizzas.js";
+import pizzas from "./routers/pizzas.js";
+import appointments from "./routers/appointments.js";
 
 dotenv.config();
 
@@ -30,7 +31,6 @@ db.once(
   console.log.bind(console, "Successfully opened connection to Mongo!")
 );
 
-
 // Define a status route
 app.get("/status", (request, response) => {
   response.send(JSON.stringify({ message: "Service running ok" }));
@@ -41,6 +41,7 @@ app.use(logging);
 
 // Use the controllers
 app.use("/pizzas", pizzas);
+app.use("/appointments", appointments);
 
 const PORT = process.env.PORT ?? 4040;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
