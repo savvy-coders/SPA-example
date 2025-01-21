@@ -75,6 +75,7 @@ router.hooks({
     // Check if data is null, view property exists, if not set view equal to "home"
     // using optional chaining (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining)
     const view = match?.data?.view ? camelCase(match.data.view) : "home";
+    const id = match?.data?.id ? match.data.id : "";
 
     switch (view) {
       case "home":
@@ -164,6 +165,7 @@ router.hooks({
       case "appointment":
         try {
           const response = await axios.get(`${process.env.API_URL}/appointments/${id}`);
+          console.log('matsinet-index.js:167-response.data:', response.data);
           store.appointment.event = {
             id: response.data._id,
             title: response.data.title || response.data.customer,
@@ -201,7 +203,7 @@ router.hooks({
   after: async (match) => {
     console.info('router after hook has fired!');
     const view = match?.data?.view ? camelCase(match.data.view) : "home";
-    console.log('matsinet-index.js:119-view:', view);
+    const id = match?.data?.id ? match.data.id : "";
 
     // Add menu toggle to bars icon in nav bar which is rendered on every page
     addNavButtonEventHandler();
@@ -411,7 +413,6 @@ router.hooks({
         document.querySelector("form").addEventListener("submit", async event => {
           event.preventDefault();
 
-          const response = await axios.post(`${process.env.API_URL}/appointments`, requestData);
           try {
             const inputList = event.target.elements;
 
@@ -421,6 +422,8 @@ router.hooks({
               start: new Date(inputList.start.value).toJSON(),
               end: new Date(inputList.end.value).toJSON()
             };
+
+            const response = await axios.post(`${process.env.API_URL}/appointments`, requestData);
 
             store.calendar.appointments.push(response.data);
 
@@ -439,12 +442,20 @@ router.hooks({
 router
   .on({
     "/": () => render(),
-    // Use object destructuring assignment to store the data and (query)params from the Navigo match parameter
-    // (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)
-    // This reduces the number of checks that need to be performed
-    ":view": ({ data, params }) => {
+    // Add a route handler for the routes that have two slots, one for view and one for id
+    ":view/:id": (match) => {
       // Change the :view data element to camel case and remove any dashes (support for multi-word views)
-      const view = data?.view ? camelCase(data.view) : "home";
+      const view = match?.data?.view ? camelCase(match.data.view) : "home";
+      if (view in store) {
+        render(store[view]);
+      } else {
+        console.log(`View ${view} not defined`);
+        render(store.viewNotFound);
+      }
+    },
+    ":view": (match) => {
+      // Change the :view data element to camel case and remove any dashes (support for multi-word views)
+      const view = match?.data?.view ? camelCase(match.data.view) : "home";
       if (view in store) {
         render(store[view]);
       } else {
