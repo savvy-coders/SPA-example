@@ -4,5 +4,6 @@ export default [
   { url: "/order", text: "Order a Pizza" },
   { url: "/pizza", text: "See all the Pizzas" },
   // { url: "/fabric-demo", text: "Fabric Demo" },
-  { url: "/leaflet", text: "Map (Leaflet)" }
+  { url: "/leaflet", text: "Map" },
+  { url: "/calendar", text: "Calendar" }
 ];

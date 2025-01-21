@@ -7,6 +7,10 @@ import { Canvas, PencilBrush } from "fabric";
 import { showSpinner } from "./components/spinner";
 import { addNavButtonEventHandler } from "./components/nav";
 import { addDeleteButtonHandler } from "./views/pizza";
+import { Calendar } from "@fullcalendar/core";
+import interactionPlugin from "@fullcalendar/interaction";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
 
 let PIZZA_PLACE_API_URL;
 
@@ -30,6 +34,36 @@ function render(state = store.home) {
   `;
 }
 
+function handleEventDragResize(info) {
+  const event = info.event;
+
+  const start = event.start.toJSON();
+  const end = event.allDay ? start : event.end.toJSON();
+
+  if (confirm("Are you sure about this change?")) {
+    const requestData = {
+      title: event.title,
+      start,
+      end,
+      url: event.url
+    };
+
+    axios
+      .put(`${process.env.API_URL}/appointments/${event.id}`, requestData)
+      .then(response => {
+        console.log(
+          `Event '${response.data.title}' (${response.data._id}) has been updated.`
+        );
+      })
+      .catch(error => {
+        info.revert();
+        console.log("It puked", error);
+      });
+  } else {
+    info.revert();
+  }
+}
+
 router.hooks({
   // Use object deconstruction to store the data and (query)params from the Navigo match parameter
   // Runs before a route handler that the match is hasn't been visited already
@@ -41,6 +75,7 @@ router.hooks({
     // Check if data is null, view property exists, if not set view equal to "home"
     // using optional chaining (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining)
     const view = match?.data?.view ? camelCase(match.data.view) : "home";
+    const id = match?.data?.id ? match.data.id : "";
 
     switch (view) {
       case "home":
@@ -104,6 +139,47 @@ router.hooks({
 
           done();
         }
+        break;
+      case "calendar":
+        try {
+          const response = await axios.get(`${process.env.API_URL}/appointments`);
+          const events = response.data.map(event => {
+            return {
+              id: event._id,
+              title: event.title || event.customer,
+              start: new Date(event.start),
+              end: new Date(event.end),
+              url: `/appointment/${event._id}`,
+              allDay: event.allDay || false
+            };
+          });
+          store.calendar.appointments = events;
+          done();
+        } catch (error) {
+          console.log("Error retrieving calendar data", error);
+
+          done();
+        }
+
+        break;
+      case "appointment":
+        try {
+          const response = await axios.get(`${process.env.API_URL}/appointments/${id}`);
+          console.log('matsinet-index.js:167-response.data:', response.data);
+          store.appointment.event = {
+            id: response.data._id,
+            title: response.data.title || response.data.customer,
+            start: new Date(response.data.start),
+            end: new Date(response.data.end),
+            url: `/appointment/${response.data._id}`
+          };
+          done();
+        } catch (error) {
+          console.log("Error retrieving appointment data", error);
+
+          done();
+        }
+        break;
       default:
         done();
     }
@@ -127,7 +203,7 @@ router.hooks({
   after: async (match) => {
     console.info('router after hook has fired!');
     const view = match?.data?.view ? camelCase(match.data.view) : "home";
-    console.log('matsinet-index.js:119-view:', view);
+    const id = match?.data?.id ? match.data.id : "";
 
     // Add menu toggle to bars icon in nav bar which is rendered on every page
     addNavButtonEventHandler();
@@ -239,6 +315,122 @@ router.hooks({
         // Force the map to zoom to the bounds of the group
         map.fitBounds(group.getBounds());
         break;
+      case "appointment":
+        const deleteButton = document.getElementById("delete-appointment");
+        deleteButton.addEventListener("click", event => {
+          deleteButton.disabled = true;
+
+          if (confirm("Are you sure you want to delete this appointment")) {
+            axios
+              .delete(
+                `${process.env.API_URL}/appointments/${event.target.dataset.id}`
+              )
+              .then(response => {
+                // Push the new pizza onto the Pizza state pizzas attribute, so it can be displayed in the pizza list
+                console.log(
+                  `Event '${response.data.title}' (${response.data._id}) has been deleted.`
+                );
+                router.navigate("/calendar");
+              })
+              .catch(error => {
+                console.log("It puked", error);
+              });
+          } else {
+            deleteButton.disabled = false;
+          }
+        });
+        break;
+      case "calendar":
+        const calendarElement = document.getElementById("calendar");
+        calendar = new Calendar(calendarElement, {
+          plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+          initialView: "dayGridMonth",
+          headerToolbar: {
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay"
+          },
+          buttonText: {
+            today: "Today",
+            month: "Month",
+            week: "Week",
+            day: "Day",
+            list: "List"
+          },
+          height: "100%",
+          dayMaxEventRows: true,
+          navLinks: true,
+          editable: true,
+          selectable: true,
+          eventClick: function (info) {
+            // change the border color just for fun
+            info.el.style.borderColor = "red";
+          },
+          eventDrop: function (info) {
+            handleEventDragResize(info);
+          },
+          eventResize: function (info) {
+            handleEventDragResize(info);
+          },
+          select: info => {
+            const title = prompt("Please enter a title");
+
+            if (title) {
+              const requestData = {
+                title: title,
+                start: info.start.toJSON(),
+                end: info.end.toJSON(),
+                allDay: info.view.type === "dayGridMonth"
+              };
+
+              axios
+                .post(`${process.env.API_URL}/appointments`, requestData)
+                .then(response => {
+                  // Push the new pizza onto the Pizza state pizzas attribute, so it can be displayed in the pizza list
+                  // response.data.title = response.data.title;
+                  response.data.url = `/appointments/${response.data._id}`;
+                  store.calendar.appointments.push(response.data);
+                  console.log(
+                    `Event '${response.data.title}' (${response.data._id}) has been created.`
+                  );
+                  calendar.addEvent(response.data);
+                  calendar.unselect();
+                })
+                .catch(error => {
+                  console.log("It puked", error);
+                });
+            } else {
+              calendar.unselect();
+            }
+          },
+          events: store.calendar.appointments || []
+        });
+        calendar.render();
+        break;
+      case "newAppointment":
+        document.querySelector("form").addEventListener("submit", async event => {
+          event.preventDefault();
+
+          try {
+            const inputList = event.target.elements;
+
+            const requestData = {
+              title: inputList.title.value,
+              allDay: inputList.allDay.checked,
+              start: new Date(inputList.start.value).toJSON(),
+              end: new Date(inputList.end.value).toJSON()
+            };
+
+            const response = await axios.post(`${process.env.API_URL}/appointments`, requestData);
+
+            store.calendar.appointments.push(response.data);
+
+            router.navigate("/calendar");
+          } catch (error) {
+            console.log("It puked", error);
+          }
+        });
+        break;
     }
 
     showSpinner(false);
@@ -248,12 +440,20 @@ router.hooks({
 router
   .on({
     "/": () => render(),
-    // Use object destructuring assignment to store the data and (query)params from the Navigo match parameter
-    // (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)
-    // This reduces the number of checks that need to be performed
-    ":view": ({ data, params }) => {
+    // Add a route handler for the routes that have two slots, one for view and one for id
+    ":view/:id": (match) => {
       // Change the :view data element to camel case and remove any dashes (support for multi-word views)
-      const view = data?.view ? camelCase(data.view) : "home";
+      const view = match?.data?.view ? camelCase(match.data.view) : "home";
+      if (view in store) {
+        render(store[view]);
+      } else {
+        console.log(`View ${view} not defined`);
+        render(store.viewNotFound);
+      }
+    },
+    ":view": (match) => {
+      // Change the :view data element to camel case and remove any dashes (support for multi-word views)
+      const view = match?.data?.view ? camelCase(match.data.view) : "home";
       if (view in store) {
         render(store[view]);
       } else {

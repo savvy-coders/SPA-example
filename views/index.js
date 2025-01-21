@@ -5,3 +5,6 @@ export { default as order } from "./order";
 export { default as viewNotFound } from "./viewNotFound";
 export { default as fabricDemo } from "./fabricDemo";
 export { default as leaflet } from "./leaflet";
+export { default as calendar } from "./calendar";
+export { default as newAppointment } from "./newAappointment";
+export { default as appointment } from "./appointment";
