@@ -12,7 +12,7 @@ export default state => {
       <th>Cheese</th>
       <th>Sauce</th>
       <th>Toppings</th>
-      <th>Customer Name</th>
+      <th>Customer</th>
       <th id="action-column">Actions</th>
       </thead>
       ${state.pizzas
@@ -23,9 +23,9 @@ export default state => {
               <td>${pizza.cheese}</td>
               <td>${pizza.sauce}</td>
               <td>${pizza.toppings.join(" & ")}</td>
-              <td>${pizza?.customer?.name || "Anonymous"}</td>
+              <td>${pizza.customer || "Anonymous"}</td>
               <td class="text-center">
-                <div class="delete-button" data-id="${pizza._id}" data-name="${pizza?.customer?.name || "Anonymous"}">Delete</div>
+                <div class="delete-button" data-id="${pizza._id}" data-name="${pizza.customer || "Anonymous"}">Delete</div>
               </td>
             </tr>
           `;

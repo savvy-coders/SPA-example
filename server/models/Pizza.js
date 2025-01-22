@@ -1,12 +1,9 @@
 import mongoose from "mongoose";
-import Customer from "./Customer.js";
 
 const pizzaSchema = new mongoose.Schema({
   customer: {
-    // Example use of a nested model
-    // You can also use a referenced model if duplication of information is an issue
-    //   https://mongoosejs.com/docs/populate.html
-    type: Customer.schema,
+    type: String,
+    validate: /^[A-Za-z0-9 ]*$/,
     required: true
   },
   crust: {
