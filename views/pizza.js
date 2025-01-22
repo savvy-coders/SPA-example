@@ -1,6 +1,5 @@
 import html from "html-literal";
 import axios from "axios";
-import router from "../";
 import * as store from "../store";
 import "../assets/css/pizza.css"
 
@@ -59,18 +58,18 @@ export function addDeleteButtonHandler() {
               .then((response) => {
                 store.pizza.pizzas = response.data;
                 // Reload the existing page, thus firing the already hook
-                router.navigate('/pizza');
+                store.global.router.navigate('/pizza');
               })
               .catch((error) => {
                 console.error("Error retrieving pizzas", error);
 
-                router.navigate('/pizza');
+                store.global.router.navigate('/pizza');
               });
           })
           .catch(error => {
             console.error("Error deleting pizza", error);
 
-            router.navigate('/pizza');
+            store.global.router.navigate('/pizza');
           })
       }
     });

@@ -18,7 +18,7 @@ const logging = (request, response, next) => {
 
 // Use the defined Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({limit: '2mb'}));
 
 const MONGODB = process.env.MONGODB ?? "mongodb://localhost/pizza";
 
