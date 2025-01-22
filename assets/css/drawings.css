@@ -18,6 +18,10 @@
     text-align: left;
 }
 
+#drawings tr {
+    height: 1.75rem;
+}
+
 #drawings tr:nth-child(even) {
     background-color: #f2f2f2;
 }
@@ -32,6 +36,7 @@
     border-radius: 0.5rem;
     cursor: pointer;
     text-align: center;
+    /* border: 2px solid white; */
 }
 
 #drawings .action-button-danger {
