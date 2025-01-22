@@ -3,10 +3,11 @@ import * as store from "./store";
 import Navigo from "navigo";
 import { camelCase } from "lodash";
 import axios from "axios";
-import { Canvas, PencilBrush } from "fabric";
 import { showSpinner } from "./components/spinner";
 import { addNavButtonEventHandler } from "./components/nav";
 import { addDeleteButtonHandler } from "./views/pizza";
+import { loadAllDrawings, addViewDrawingButtonHandler, addDeleteDrawingButtonHandler } from "./views/drawings";
+import { setupFabricDemo, loadDrawingDataFromId, loadDrawingFromID } from "./views/fabricDemo";
 import { Calendar } from "@fullcalendar/core";
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -117,7 +118,7 @@ router.hooks({
         break;
       case "pizza":
         try {
-          const response = await axios.get(`${process.env.PIZZA_PLACE_API_URL}/pizzas`);
+          const response = await axios.get(`${process.env.API_URL}/pizzas`);
 
           store.pizza.pizzas = response.data;
 
@@ -180,6 +181,16 @@ router.hooks({
           done();
         }
         break;
+      case "drawings":
+        loadAllDrawings(done);
+        break;
+      case "fabricDemo":
+        if (id) {
+          loadDrawingDataFromId(id, done);
+        } else {
+          done();
+        }
+        break;
       default:
         done();
     }
@@ -194,6 +205,11 @@ router.hooks({
     addNavButtonEventHandler();
 
     if (view === 'pizza') addDeleteButtonHandler();
+
+    if (view === 'drawings') {
+      addDeleteDrawingButtonHandler();
+      addViewDrawingButtonHandler();
+    }
   },
   leave: async (done, match) => {
     console.info('router leave hook has fired!');
@@ -261,31 +277,15 @@ router.hooks({
         addDeleteButtonHandler();
         break;
       case "fabricDemo":
-        console.log("fabric view after render fired");
-
-        // Initialize fabric
-        const canvas = new Canvas(
-          document.getElementById("fabricCanvas"),
-          {
-            // Enable drawing mode
-            isDrawingMode: true,
-            height: 400,
-            width: 600
-          }
-        );
-
-        canvas.freeDrawingBrush = new PencilBrush(canvas);
-
-        document.getElementById("fabricExport").addEventListener("click", event => {
-          event.preventDefault();
-          const json = canvas.toJSON();
-          console.log('matsinet-index.js:196-json:', json);
-        })
-
-        document.getElementById("fabricClear").addEventListener("click", event => {
-          event.preventDefault();
-          const json = canvas.clear();
-        })
+        setupFabricDemo();
+        console.log('matsinet-index.js:281-id:', id);
+        if (id) {
+          loadDrawingFromID(id);
+        }
+        break;
+      case "drawings":
+        addDeleteDrawingButtonHandler();
+        // addViewDrawingButtonHandler();
         break;
       case "leaflet":
         // Initialize the map DOM element, set the focus point and zoom level

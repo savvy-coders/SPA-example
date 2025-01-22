@@ -8,7 +8,8 @@ export default state => {
     </h3>
     <section id="jumbotron">
       <h2>SavvyCoders JavaScript Fullstack Bootcamp</h2>
-      <a id="action-button">"Call to Action Button"</a>
+      <a id="action-button" class="action-button-light">"Call to Action Button"</a>
+      <a id="view-code" class="action-button-light" href="https://github.com/savvy-coders/SPA-example" target="_blank">View GitHub Repository</a>
     </section>
   `;
 }
