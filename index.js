@@ -13,6 +13,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 
+import markerIcon from "./node_modules/leaflet/dist/images/marker-icon.png";
+
 let PIZZA_PLACE_API_URL;
 
 if (process.env.PIZZA_PLACE_API_URL) {
@@ -304,7 +306,7 @@ router.hooks({
         store.leaflet.parks.forEach(park => {
           // console.log(`${park.name} is located at ${park.latitude}, ${park.longitude}`);
 
-          const marker = L.marker([park.latitude, park.longitude])
+          const marker = L.marker([park.latitude, park.longitude]).setIcon(L.icon({iconUrl: markerIcon}))
             .bindPopup(`${park.name}<br>${park.addresses[0].city}, ${park.addresses[0].stateCode}`);
 
           markerArray.push(marker);
