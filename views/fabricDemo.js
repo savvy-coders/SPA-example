@@ -24,7 +24,7 @@ export default state => {
   `;
 }
 
-export async function setupFabricDemo() {
+export async function setupFabricDemo(id = "") {
   console.log("fabric view after render fired");
 
   // Initialize fabric
@@ -74,10 +74,15 @@ export async function setupFabricDemo() {
       json: JSON.stringify(drawingCanvas.toJSON())
     }
 
-    console.log('matsinet-index.js:310-requestData:', requestData);
+
+    const requestConfig = {
+      url: `${process.env.API_URL}/drawings/${id}`,
+      method: id ? 'PUT' : 'POST',
+      data: requestData
+    }
 
     await axios
-      .post(`${process.env.API_URL}/drawings`, requestData)
+      .request(requestConfig)
       .then(response => {
         // Push the new pizza to the store so we don't have to reload from the API
         store.drawings.drawings.push(response.data);
