@@ -11,10 +11,14 @@ Run `npm run install` to install necessary package
 Create/update the .env file at the root level with the following key/values, update as needed:
 
 ```bash
-PIZZA_PLACE_API_URL=http://localhost:4040
-MONGODB=mongodb://localhost/pizza
+PIZZA_PLACE_API_URL=https://spa-example-api.onrender.com
+API_URL=https://spa-example-api.onrender.com
+MONGODB=
 [^---This MONGODB value above should be changed to be your own mongodb cluster connection string! See the curriculum for more on that!---^]
 OPEN_WEATHER_MAP_API_KEY=
+[^--- You get this from Open Weather Map (https://openweathermap.org/api)]
+NPS_API_KEY=
+[^--- You get this from National Park Service (https://www.nps.gov/subjects/developer/get-started.htm)]
 ```
 
 ## Execution
@@ -32,7 +36,7 @@ In the terminal use npm run
 `parcel-build`: Package SPA for production deployment
 
 
-## Deployed for cohort use:
+## Deployed for cohort use on Render.com:
 
-URL: https://sc-pizza-api.onrender.com
-Render.com:
+SPA URL: https://spa-example.onrender.com
+API URL: https://spa-example-api.onrender.com
