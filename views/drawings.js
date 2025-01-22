@@ -22,7 +22,7 @@ export default state => {
               <td>${drawing.title}</td>
               <td>${drawing.createdAt}</td>
               <td class="action-column">
-                <button class="action-button action-button-danger delete-button" data-id="${drawing._id}" data-name="${drawing.title}">Delete</button>
+                <a class="action-button action-button-danger delete-button" data-id="${drawing._id}" data-name="${drawing.title}">Delete</a>
                 <a class="action-button action-button-success" href="/fabric-demo/${drawing._id}" data-navigo>View</a>
               </td>
             </tr>

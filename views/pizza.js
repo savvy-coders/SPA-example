@@ -6,6 +6,9 @@ import "../assets/css/pizza.css"
 
 export default state => {
   return html`
+    <section class="action-menu">
+      <a href="/order" class="action-button" data-navigo>New Pizza</a>
+    </section>
     <table id="pizzas">
       <thead>
       <th>Crust</th>
