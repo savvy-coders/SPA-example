@@ -407,6 +407,7 @@ router.hooks({
           },
           events: store.calendar.appointments || []
         });
+        // calendar.refetchEvents();
         calendar.render();
         break;
       case "newAppointment":
