@@ -75,11 +75,34 @@ dialog>pre {
   margin: 2em;
 }
 
-.action-button {
+.action-menu {
+  margin: 2em;
+}
+
+.action-menu .action-button {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  text-align: center;
+  background-color: lightgray;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.action-button-light {
+  border-radius: .5rem;
+  border: 2px solid black;
+  padding: 0.75rem;
+}
+
+.action-button-dark {
   background: rgb(44, 62, 80);
   border-radius: .5rem;
   padding: 0.75rem;
   color: white;
+}
+
+#view-code {
+  margin-top: 1rem;
 }
 
 @keyframes l1 {

@@ -2,6 +2,14 @@
 
 ### Complete Savvy Coders SPA Example with Single Page Application and Express REST API Server
 
+This demo also has the following 3rd party libraries examples:
+
+- FullCalendar (https://fullcalendar.io/), for daily, weekly and monthly calendar display
+- Leaflet (https://leafletjs.com/), for map display
+- Fabric (https://fabricjs.com/), for drawing on Canvas HTML element in SVG vector format
+
+NOTE: The use of a 3rd party library does NOT constitute the use of an API when implementing a capstone MVP.
+
 ## Setup
 
 Run `npm run install` to install necessary package
@@ -39,4 +47,5 @@ In the terminal use npm run
 ## Deployed for cohort use on Render.com:
 
 SPA URL: https://spa-example.onrender.com
+
 API URL: https://spa-example-api.onrender.com
