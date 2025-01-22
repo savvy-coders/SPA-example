@@ -1,6 +1,5 @@
 import html from "html-literal";
 import axios from "axios";
-import router from "..";
 import * as store from "../store";
 import "../assets/css/drawings.css"
 
@@ -69,18 +68,18 @@ export function addDeleteDrawingButtonHandler() {
               .then((response) => {
                 store.drawings.drawings = response.data;
                 // Reload the existing page, thus firing the already hook
-                router.navigate('/drawings');
+                store.global.router.navigate('/drawings');
               })
               .catch((error) => {
                 console.error("Error retrieving drawings", error);
 
-                router.navigate('/drawings');
+                store.global.router.navigate('/drawings');
               });
           })
           .catch(error => {
             console.error("Error deleting drawing", error);
 
-            router.navigate('/drawings');
+            store.global.router.navigate('/drawings');
           })
       }
     });
@@ -93,7 +92,7 @@ export function addViewDrawingButtonHandler() {
   .forEach(domElement => {
     domElement.addEventListener('click', async event => {
       const { id, name } = event.target.dataset;
-      router.navigate(`/fabric-demo/${id}`);
+      store.global.router.navigate(`/fabric-demo/${id}`);
     });
   });
 }

@@ -70,7 +70,7 @@ export async function setupFabricDemo() {
 
     const requestData = {
       title: event.target.elements.title.value,
-      svg: drawingCanvas.toSVG(),
+      // svg: drawingCanvas.toSVG(),
       json: JSON.stringify(drawingCanvas.toJSON())
     }
 
@@ -82,12 +82,12 @@ export async function setupFabricDemo() {
         // Push the new pizza to the store so we don't have to reload from the API
         store.drawings.drawings.push(response.data);
 
-        router.navigate("/drawings");
+        store.global.router.navigate("/drawings");
       })
       .catch(error => {
         console.error("Error storing new pizza", error);
 
-        router.navigate('/fabric-demo');
+        store.global.router.navigate('/fabric-demo');
       });
   });
 }

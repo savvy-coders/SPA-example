@@ -465,4 +465,5 @@ router
   })
   .resolve();
 
+store.global.router = router;
 export default router;
