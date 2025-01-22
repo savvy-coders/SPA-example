@@ -279,7 +279,7 @@ router.hooks({
         addDeleteButtonHandler();
         break;
       case "fabricDemo":
-        setupFabricDemo();
+        setupFabricDemo(id);
         console.log('matsinet-index.js:281-id:', id);
         if (id) {
           loadDrawingFromID(id);
