@@ -291,7 +291,7 @@ router.hooks({
         break;
       case "leaflet":
         // Initialize the map DOM element, set the focus point and zoom level
-        map = L.map('map').setView([51.505, -0.09], 13);
+        const map = L.map('map').setView([51.505, -0.09], 13);
 
         // Initialize the background (earth) layer so that markers appear to belong somewhere
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -344,7 +344,7 @@ router.hooks({
         break;
       case "calendar":
         const calendarElement = document.getElementById("calendar");
-        calendar = new Calendar(calendarElement, {
+        const calendar = new Calendar(calendarElement, {
           plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
           initialView: "dayGridMonth",
           headerToolbar: {
