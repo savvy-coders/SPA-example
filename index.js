@@ -94,7 +94,7 @@ router.hooks({
 
           const location = { latitude: positionResponse.coords.latitude, longitude: positionResponse.coords.longitude };
 
-          const geoResponse = await axios.get(`http://api.openweathermap.org/geo/1.0/reverse?lat=${location.latitude}8&lon=${location.longitude}&limit=3&appid=${process.env.OPEN_WEATHER_MAP_API_KEY}`);
+          const geoResponse = await axios.get(`https://api.openweathermap.org/geo/1.0/reverse?lat=${location.latitude}8&lon=${location.longitude}&limit=3&appid=${process.env.OPEN_WEATHER_MAP_API_KEY}`);
 
           const city = geoResponse.data[0];
 
