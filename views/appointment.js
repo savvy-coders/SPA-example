@@ -1,7 +1,6 @@
 import html from "html-literal";
 
 export default state => {
-  console.log('matsinet-appointment.js:4-state:', state);
   return html`
     <div class="appointment-container">
       <h3>${state.event.title}</h3>

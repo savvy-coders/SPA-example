@@ -54,6 +54,7 @@ function handleEventDragResize(info) {
     axios
       .put(`${process.env.API_URL}/appointments/${event.id}`, requestData)
       .then(response => {
+        // TODO: Add notification similar to Bulma's
         console.log(
           `Event '${response.data.title}' (${response.data._id}) has been updated.`
         );
@@ -102,7 +103,6 @@ router.hooks({
           const city = geoResponse.data[0];
 
           const weatherResponse = await axios.get(`https://api.openweathermap.org/data/2.5/weather?appid=${process.env.OPEN_WEATHER_MAP_API_KEY}&q=${city.name},${city.state}`);
-          console.log('matsinet- weatherResponse', weatherResponse);
 
           store.home.weather = {
             city: weatherResponse.data.name,
@@ -168,7 +168,6 @@ router.hooks({
       case "appointment":
         try {
           const response = await axios.get(`${process.env.API_URL}/appointments/${id}`);
-          console.log('matsinet-index.js:167-response.data:', response.data);
           store.appointment.event = {
             id: response.data._id,
             title: response.data.title || response.data.customer,
@@ -243,7 +242,6 @@ router.hooks({
           event.preventDefault();
 
           const inputList = event.target.elements;
-          console.log('matsinet-inputList', inputList);
 
           const toppings = [];
           for (let input of inputList.toppings) {
@@ -280,7 +278,6 @@ router.hooks({
         break;
       case "fabricDemo":
         setupFabricDemo(id);
-        console.log('matsinet-index.js:281-id:', id);
         if (id) {
           loadDrawingFromID(id);
         }
@@ -293,19 +290,45 @@ router.hooks({
         // Initialize the map DOM element, set the focus point and zoom level
         const map = L.map('map').setView([51.505, -0.09], 13);
 
+        const precipitationLayer = L.tileLayer(
+          `https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid=${process.env.OPEN_WEATHER_MAP_API_KEY}`,
+          { layer: "precipitation_new" }
+        );
+        const temperatureLayer = L.tileLayer(
+          `https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid=${process.env.OPEN_WEATHER_MAP_API_KEY}`,
+          { layer: "temp_new" }
+        );
+        const windLayer = L.tileLayer(
+          `https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid=${process.env.OPEN_WEATHER_MAP_API_KEY}`,
+          { layer: "wind_new" }
+        );
+
         // Initialize the background (earth) layer so that markers appear to belong somewhere
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        const openWeatherMapLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 19,
           attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
+        })
+
+        openWeatherMapLayer.addTo(map);
+
+        baseLayers = {
+          "OpenStreetMap": openWeatherMapLayer
+        }
+
+        overlayLayers = {
+          "Precipitation": precipitationLayer,
+          "Temperature": temperatureLayer,
+          "Wind": windLayer
+        }
+
+        L.control.layers(baseLayers, overlayLayers).addTo(map);
+        L.control.scale().addTo(map);
 
         // Create a group of markers so we can get their outside bounding box
         var markerArray = [];
 
         // Iterate of the parks, create a marker and add it to the marker group
         store.leaflet.parks.forEach(park => {
-          // console.log(`${park.name} is located at ${park.latitude}, ${park.longitude}`);
-
           const marker = L.marker([park.latitude, park.longitude]).setIcon(L.icon({iconUrl: markerIcon}))
             .bindPopup(`${park.name}<br>${park.addresses[0].city}, ${park.addresses[0].stateCode}`);
 
@@ -392,9 +415,7 @@ router.hooks({
                   // response.data.title = response.data.title;
                   response.data.url = `/appointments/${response.data._id}`;
                   store.calendar.appointments.push(response.data);
-                  console.log(
-                    `Event '${response.data.title}' (${response.data._id}) has been created.`
-                  );
+
                   calendar.addEvent(response.data);
                   calendar.unselect();
                 })
