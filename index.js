@@ -311,11 +311,11 @@ router.hooks({
 
         openWeatherMapLayer.addTo(map);
 
-        baseLayers = {
+        const baseLayers = {
           "OpenStreetMap": openWeatherMapLayer
         }
 
-        overlayLayers = {
+        const overlayLayers = {
           "Precipitation": precipitationLayer,
           "Temperature": temperatureLayer,
           "Wind": windLayer
@@ -325,7 +325,7 @@ router.hooks({
         L.control.scale().addTo(map);
 
         // Create a group of markers so we can get their outside bounding box
-        var markerArray = [];
+        const markerArray = [];
 
         // Iterate of the parks, create a marker and add it to the marker group
         store.leaflet.parks.forEach(park => {
