@@ -68,7 +68,7 @@ router.put("/:id", async (request, response) => {
     response.json(data);
   } catch(error) {
     // Output error to the console in case it fails to send in response
-    console.log(error);
+    (error);
 
     if ('name' in error && error.name === 'ValidationError') return response.status(400).json(error.errors);
 

@@ -30,8 +30,6 @@ export default state => {
 }
 
 export async function setupFabricDemo(id = "") {
-  console.log("fabric view after render fired");
-
   // Initialize fabric
   var drawingCanvas = new Canvas(
     document.getElementById("fabricCanvas"),
@@ -52,16 +50,16 @@ export async function setupFabricDemo(id = "") {
     event.preventDefault();
     const json = drawingCanvas.toJSON();
     const jsonString = JSON.stringify(json)
-    console.log('Fabric JSON export:', jsonString);
-    console.log('Fabric JSON export length:', jsonString.length);
+    console.info('Fabric JSON export:', jsonString);
+    console.info('Fabric JSON export length:', jsonString.length);
     alert("Please open Developer Tools Console tab to see the output");
   })
 
   document.getElementById("exportSVG").addEventListener("click", event => {
     event.preventDefault();
     const svg = drawingCanvas.toSVG();
-    console.log('Fabric SVG export:', svg);
-    console.log('Fabric SVG export length:', svg.length);
+    console.info('Fabric SVG export:', svg);
+    console.info('Fabric SVG export length:', svg.length);
     alert("Please open Developer Tools Console tab to see the output");
   })
 
@@ -76,8 +74,6 @@ export async function setupFabricDemo(id = "") {
   document.getElementById("fabricUndo").addEventListener("click", event => {
     event.preventDefault();
 
-    console.log("The Undo button was clicked.");
-
     const lastItemIndex = (drawingCanvas.getObjects().length - 1);
     const item = drawingCanvas.item(lastItemIndex);
 
@@ -86,14 +82,10 @@ export async function setupFabricDemo(id = "") {
       store.fabricDemo.history.push(item);
       drawingCanvas.renderAll();
     }
-
-    console.log('history', store.fabricDemo.history);
   })
 
   document.getElementById("fabricRedo").addEventListener("click", event => {
     event.preventDefault();
-
-    console.log("The Redo button was clicked.");
 
     if (store.fabricDemo.history.length) {
       const lastItem = store.fabricDemo.history.pop();

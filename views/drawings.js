@@ -55,7 +55,6 @@ export async function loadAllDrawings(done = () => {}) {
 }
 
 export function addDeleteDrawingButtonHandler() {
-  console.log("Adding Drawing delete click handlers");
   document.querySelectorAll('.delete-button')
   .forEach(domElement => {
     domElement.addEventListener('click', async event => {
