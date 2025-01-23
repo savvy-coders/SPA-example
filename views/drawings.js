@@ -16,10 +16,18 @@ export default state => {
       </thead>
       ${state.drawings
         .map(drawing => {
+          const legacyDate = new Date(drawing.createdAt);
+          // Using Intl.DateTimeFormat for advanced formatting
+          const formatter = new Intl.DateTimeFormat('en-US', {
+            dateStyle: 'full',
+            timeStyle: 'short'
+          });
+          const createdAt = formatter.format(legacyDate);
+
           return html`
             <tr>
               <td>${drawing.title}</td>
-              <td>${drawing.createdAt}</td>
+              <td>${createdAt}</td>
               <td class="action-column">
                 <a class="action-button action-button-danger delete-button" data-id="${drawing._id}" data-name="${drawing.title}">Delete</a>
                 <a class="action-button action-button-success" href="/fabric-demo/${drawing._id}" data-navigo>View</a>
