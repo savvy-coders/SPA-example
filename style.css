@@ -14,7 +14,7 @@ header>h1 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 90vh;
+  height: 65vh;
 }
 
 dialog {
