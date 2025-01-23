@@ -7,18 +7,23 @@ import * as store from "../store";
 export default state => {
   return html`
     <form id="drawing-form">
-      <section style="margin-left: 2rem;">
+      <section style="margin-left: 2rem; margin-top: 1rem;">
         <label for="title">Title</label>
         <input type="text" name="title" id="title">
       </section>
-      <section id="fabricDemo" style="margin: 2rem;">
+      <section id="fabricDemo" style="margin-left: 2rem;">
         <canvas id="fabricCanvas" style="border: black solid 3px; margin-bottom: 1rem;"></canvas>
       </section>
+      <section style="margin-left: 2rem;">Hold Shift key to draw only straight line</section>
       <section style="margin-left: 2rem;">
-        <input type="submit" value="Save to API" class="action-button-dark">
+        <button id="fabricUndo" class="action-button-dark">Undo</button>
+        <button id="fabricRedo" class="action-button-dark">Redo</button>
+        <button id="fabricClear" class="action-button-dark">Clear</button>
+        <input type="submit" value="Save" class="action-button-dark">
+      </section>
+      <section style="margin-left: 2rem;">
         <button id="exportJSON" class="action-button-dark">Console Log JSON</button>
         <button id="exportSVG" class="action-button-dark">Console Log SVG</button>
-        <button id="fabricClear" class="action-button-dark">Clear</button>
       </section>
     </form>
   `;
@@ -38,7 +43,7 @@ export async function setupFabricDemo(id = "") {
     }
   );
 
-  drawingCanvas.freeDrawingBrush = new PencilBrush(drawingCanvas);
+  drawingCanvas.freeDrawingBrush = new PencilBrush(drawingCanvas, {width: 5, straightLineKey: 'shiftKey'});
 
   // Store the Fabric canvas in state so that I can use it outside this function
   store.fabricDemo.canvas = drawingCanvas;
@@ -62,7 +67,39 @@ export async function setupFabricDemo(id = "") {
 
   document.getElementById("fabricClear").addEventListener("click", event => {
     event.preventDefault();
-    drawingCanvas.clear();
+    if(confirm("Clear is not reversible, are you sure?")) {
+      drawingCanvas.clear();
+    }
+
+  })
+
+  document.getElementById("fabricUndo").addEventListener("click", event => {
+    event.preventDefault();
+
+    console.log("The Undo button was clicked.");
+
+    const lastItemIndex = (drawingCanvas.getObjects().length - 1);
+    const item = drawingCanvas.item(lastItemIndex);
+
+    if(item.get('type') === 'path') {
+      drawingCanvas.remove(item);
+      store.fabricDemo.history.push(item);
+      drawingCanvas.renderAll();
+    }
+
+    console.log('history', store.fabricDemo.history);
+  })
+
+  document.getElementById("fabricRedo").addEventListener("click", event => {
+    event.preventDefault();
+
+    console.log("The Redo button was clicked.");
+
+    if (store.fabricDemo.history.length) {
+      const lastItem = store.fabricDemo.history.pop();
+      drawingCanvas.add(lastItem);
+      drawingCanvas.renderAll();
+    }
   })
 
   document.getElementById('drawing-form').addEventListener('submit', async event => {
