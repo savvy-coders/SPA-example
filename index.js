@@ -290,11 +290,39 @@ router.hooks({
         // Initialize the map DOM element, set the focus point and zoom level
         const map = L.map('map').setView([51.505, -0.09], 13);
 
+        const precipitationLayer = L.tileLayer(
+          `https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid=${process.env.OPEN_WEATHER_MAP_API_KEY}`,
+          { layer: "precipitation_new" }
+        );
+        const temperatureLayer = L.tileLayer(
+          `https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid=${process.env.OPEN_WEATHER_MAP_API_KEY}`,
+          { layer: "temp_new" }
+        );
+        const windLayer = L.tileLayer(
+          `https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid=${process.env.OPEN_WEATHER_MAP_API_KEY}`,
+          { layer: "wind_new" }
+        );
+
         // Initialize the background (earth) layer so that markers appear to belong somewhere
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        const openWeatherMapLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 19,
           attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
+        })
+
+        openWeatherMapLayer.addTo(map);
+
+        baseLayers = {
+          "OpenStreetMap": openWeatherMapLayer
+        }
+
+        overlayLayers = {
+          "Precipitation": precipitationLayer,
+          "Temperature": temperatureLayer,
+          "Wind": windLayer
+        }
+
+        L.control.layers(baseLayers, overlayLayers).addTo(map);
+        L.control.scale().addTo(map);
 
         // Create a group of markers so we can get their outside bounding box
         var markerArray = [];
