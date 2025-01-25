@@ -66,7 +66,7 @@ export async function setupFabricDemo(id = "") {
 
   document.getElementById("exportBase64").addEventListener("click", event => {
     event.preventDefault();
-    const text = drawingCanvas.upperCanvasEl.toDataURL();
+    const text = drawingCanvas.lowerCanvasEl.toDataURL();
     console.info('Fabric Base64 export:', text);
     console.info('Fabric Base64 export length:', text.length);
     alert("Please open Developer Tools Console tab to see the output");
