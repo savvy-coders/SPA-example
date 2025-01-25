@@ -24,6 +24,7 @@ export default state => {
       <section style="margin-left: 2rem;">
         <button id="exportJSON" class="action-button-dark">Console Log JSON</button>
         <button id="exportSVG" class="action-button-dark">Console Log SVG</button>
+        <button id="exportBase64" class="action-button-dark">Console Log Base64</button>
       </section>
     </form>
   `;
@@ -41,7 +42,7 @@ export async function setupFabricDemo(id = "") {
     }
   );
 
-  drawingCanvas.freeDrawingBrush = new PencilBrush(drawingCanvas, {width: 5, straightLineKey: 'shiftKey'});
+  drawingCanvas.freeDrawingBrush = new PencilBrush(drawingCanvas, { width: 20, straightLineKey: 'shiftKey' });
 
   // Store the Fabric canvas in state so that I can use it outside this function
   store.fabricDemo.canvas = drawingCanvas;
@@ -63,12 +64,19 @@ export async function setupFabricDemo(id = "") {
     alert("Please open Developer Tools Console tab to see the output");
   })
 
+  document.getElementById("exportBase64").addEventListener("click", event => {
+    event.preventDefault();
+    const text = drawingCanvas.upperCanvasEl.toDataURL();
+    console.info('Fabric Base64 export:', text);
+    console.info('Fabric Base64 export length:', text.length);
+    alert("Please open Developer Tools Console tab to see the output");
+  })
+
   document.getElementById("fabricClear").addEventListener("click", event => {
     event.preventDefault();
     if(confirm("Clear is not reversible, are you sure?")) {
       drawingCanvas.clear();
     }
-
   })
 
   document.getElementById("fabricUndo").addEventListener("click", event => {
