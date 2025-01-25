@@ -4,7 +4,8 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "parcel-build": "parcel build index.html && cp _redirects ./dist/",
+    "build": "parcel build index.html",
+    "netlify-build": "parcel build index.html && cp ./netlify/_redirects ./dist/",
     "serve": "parcel index.html",
     "app:watch": "nodemon --watch ./server -e js server/app.js",
     "be:test": "npx jasmine",

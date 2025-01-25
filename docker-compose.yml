@@ -1,0 +1,21 @@
+services:
+  api:
+    image: node:lts
+    container_name: ExampleAPI
+    working_dir: /app
+    ports:
+      - 4040:4040
+    volumes:
+      - ./:/app
+    environment:
+      MONGODB: ${MONGODB}
+    command: bash -c "npm install && node /app/server/app.js"
+  web:
+    build: .
+    container_name: ExampleSPA
+    ports:
+      - 8080:80
+    environment:
+      - API_URL = ${API_URL}
+      - OPEN_WEATHER_MAP_API_KEY = ${OPEN_WEATHER_MAP_API_KEY}
+      - NPS_API_KEY = ${NPS_API_KEY}n
