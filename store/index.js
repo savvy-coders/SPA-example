@@ -11,3 +11,4 @@ export { default as calendar } from "./calendar";
 export { default as newAppointment } from "./newAppointment";
 export { default as appointment } from "./appointment";
 export { default as global } from "./global";
+export { default as contact } from "./contact";

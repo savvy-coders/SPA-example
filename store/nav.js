@@ -5,5 +5,6 @@ export default [
   { url: "/pizza", text: "Pizzas" },
   { url: "/drawings", text: "Drawings" },
   { url: "/leaflet", text: "Map" },
-  { url: "/calendar", text: "Calendar" }
+  { url: "/calendar", text: "Calendar" },
+  { url: "/contact", text: "Contact" }
 ];
