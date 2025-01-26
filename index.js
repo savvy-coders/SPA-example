@@ -455,6 +455,21 @@ router.hooks({
           }
         });
         break;
+      case "contact":
+        document.getElementById("contact-form").addEventListener(async event => {
+          event.preventDefault();
+          
+          const inputs = event.target.elements;
+          
+          const requestData = {
+            name: inputs.name.value,
+            email: inputs.email.value,
+            message: inputs.message.value,
+          }
+          
+          console.log(requestData)
+        });  
+        break;
     }
 
     showSpinner(false);
