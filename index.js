@@ -456,7 +456,7 @@ router.hooks({
         });
         break;
       case "contact":
-        document.getElementById("contact-form").addEventListener(async event => {
+        document.getElementById("contact-form").addEventListener('submit', async event => {
           event.preventDefault();
           
           const inputs = event.target.elements;
@@ -467,7 +467,13 @@ router.hooks({
             message: inputs.message.value,
           }
           
-          console.log(requestData)
+          const response = await axios.post(`${process.env.API_URL}/contacts`, requestData);
+
+          // Store the individual and collection for later use
+          store.contacts.contact = response.data;
+          store.contacts.contacts.push(response.data);
+
+          router.navigate("/");
         });  
         break;
     }
