@@ -15,13 +15,13 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 
 import markerIcon from "./node_modules/leaflet/dist/images/marker-icon.png";
 
-let PIZZA_PLACE_API_URL;
+let API_URL;
 
-if (process.env.PIZZA_PLACE_API_URL) {
-  PIZZA_PLACE_API_URL = process.env.PIZZA_PLACE_API_URL ?? "http://localhost:4040";
+if (process.env.API_URL) {
+  API_URL = process.env.API_URL ?? "http://localhost:4040";
 } else {
   console.error(
-    "Please create the .env file with a value for PIZZA_PLACE_API_URL"
+    "Please create the .env file with a value for API_URL"
   );
 }
 
@@ -259,7 +259,7 @@ router.hooks({
           };
 
           await axios
-            .post(`${PIZZA_PLACE_API_URL}/pizzas`, requestData)
+            .post(`${API_URL}/pizzas`, requestData)
             .then(response => {
               // Push the new pizza to the store so we don't have to reload from the API
               store.pizza.pizzas.push(response.data);
@@ -454,6 +454,27 @@ router.hooks({
             console.log("It puked", error);
           }
         });
+        break;
+      case "contact":
+        document.getElementById("contact-form").addEventListener('submit', async event => {
+          event.preventDefault();
+          
+          const inputs = event.target.elements;
+          
+          const requestData = {
+            name: inputs.name.value,
+            email: inputs.email.value,
+            message: inputs.message.value,
+          }
+          
+          const response = await axios.post(`${process.env.API_URL}/contacts`, requestData);
+
+          // Store the individual and collection for later use
+          store.contacts.contact = response.data;
+          store.contacts.contacts.push(response.data);
+
+          router.navigate("/");
+        });  
         break;
     }
 

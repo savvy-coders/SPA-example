@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import pizzas from "./routers/pizzas.js";
 import appointments from "./routers/appointments.js";
 import drawings from "./routers/drawings.js";
+import contacts from "./routers/contacts.js";
 
 dotenv.config();
 
@@ -44,6 +45,7 @@ app.use(logging);
 app.use("/pizzas", pizzas);
 app.use("/appointments", appointments);
 app.use("/drawings", drawings);
+app.use("/contacts", contacts);
 
 const PORT = process.env.PORT ?? 4040;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));

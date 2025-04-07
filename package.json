@@ -4,7 +4,8 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "parcel-build": "parcel build index.html && cp _redirects ./dist/",
+    "build": "parcel build index.html",
+    "netlify-build": "parcel build index.html && cp ./netlify/_redirects ./dist/",
     "serve": "parcel index.html",
     "app:watch": "nodemon --watch ./server -e js server/app.js",
     "be:test": "npx jasmine",
@@ -48,6 +49,7 @@
     "@fullcalendar/interaction": "6.1.15",
     "@fullcalendar/list": "^6.1.15",
     "@fullcalendar/timegrid": "^6.1.15",
+    "@sendgrid/mail": "^8.1.4",
     "axios": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^5.0.1",

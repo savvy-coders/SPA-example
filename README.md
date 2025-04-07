@@ -49,3 +49,15 @@ In the terminal use npm run
 SPA URL: https://spa-example.onrender.com
 
 API URL: https://spa-example-api.onrender.com
+
+
+
+## Docker deployment
+
+### Start containers
+
+Run: `docker-compose up -d`
+
+### Stop containers
+
+Run: `docker-compose stop`
