@@ -74,6 +74,11 @@ router.hooks({
   before: async (done, match) => {
     console.info('router before hook has fired!');
 
+    if (!process.env.API_URL) {
+      confirm('Environment variable for API_URL is not defined, please add it to .env');
+      exit()
+    }
+
     showSpinner();
 
     // Check if data is null, view property exists, if not set view equal to "home"
@@ -458,15 +463,15 @@ router.hooks({
       case "contact":
         document.getElementById("contact-form").addEventListener('submit', async event => {
           event.preventDefault();
-          
+
           const inputs = event.target.elements;
-          
+
           const requestData = {
             name: inputs.name.value,
             email: inputs.email.value,
             message: inputs.message.value,
           }
-          
+
           const response = await axios.post(`${process.env.API_URL}/contacts`, requestData);
 
           // Store the individual and collection for later use
@@ -474,7 +479,7 @@ router.hooks({
           store.contacts.contacts.push(response.data);
 
           router.navigate("/");
-        });  
+        });
         break;
     }
 
