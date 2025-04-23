@@ -2,10 +2,10 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import pizzas from "./routers/pizzas.js";
-import appointments from "./routers/appointments.js";
-import drawings from "./routers/drawings.js";
-import contacts from "./routers/contacts.js";
+import pizzas from "./controllers/pizzas.js";
+import appointments from "./controllers/appointments.js";
+import drawings from "./controllers/drawings.js";
+import contacts from "./controllers/contacts.js";
 
 dotenv.config();
 
