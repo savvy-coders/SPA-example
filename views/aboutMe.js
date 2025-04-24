@@ -5,13 +5,13 @@ import "../assets/css/aboutMe.css";
   import dogPic from "../assets/img/dog-with-flower.jpg";
 */
 // Import all images using the aggregator
-import * as images from "../assets/img/";
+import dogWithFlower from "url:../assets/img/dog-with-flower.jpg";
 
 export default state => {
   return html`
     <section id="about-me">
       <h2>Vivamus ac justo eu nisi</h2>
-      <img src="${images.dogWithFlower}" alt="me" />
+      <img src="${dogWithFlower}" alt="me" />
       <h3>Dynamic paragraph loaded from state</h3>
       <p>${state.paragraph}</p>
       <hr>
