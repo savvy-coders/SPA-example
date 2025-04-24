@@ -334,7 +334,7 @@ router.hooks({
 
         // Iterate of the parks, create a marker and add it to the marker group
         store.leaflet.parks.forEach(park => {
-          const marker = L.marker([park.latitude, park.longitude]).setIcon(L.icon({iconUrl: markerIcon}))
+          const marker = L.marker([park.latitude, park.longitude])
             .bindPopup(`${park.name}<br>${park.addresses[0].city}, ${park.addresses[0].stateCode}`);
 
           markerArray.push(marker);
