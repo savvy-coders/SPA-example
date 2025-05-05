@@ -6,10 +6,15 @@ import pizzas from "./controllers/pizzas.js";
 import appointments from "./controllers/appointments.js";
 import drawings from "./controllers/drawings.js";
 import contacts from "./controllers/contacts.js";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./lib/auth.js";
 
 dotenv.config();
 
 const app = express();
+
+// Per the Better Auth docs this must be above the express.json invocation
+app.all('/auth/*', toNodeHandler(auth));
 
 // Logging Middleware Declaration
 const logging = (request, response, next) => {

@@ -6,5 +6,6 @@ export default [
   { url: "/drawings", text: "Drawings" },
   { url: "/leaflet", text: "Map" },
   { url: "/calendar", text: "Calendar" },
-  { url: "/contact", text: "Contact" }
+  { url: "/contact", text: "Contact" },
+  { url: "/register", text: "Register" }
 ];
