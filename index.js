@@ -12,6 +12,7 @@ import { Calendar } from "@fullcalendar/core";
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
+import { authClient } from "./lib/auth-client";
 
 import markerIcon from "./node_modules/leaflet/dist/images/marker-icon.png";
 
@@ -481,6 +482,38 @@ router.hooks({
           router.navigate("/");
         });
         break;
+      case "register":
+        document.getElementById("register-form").addEventListener('submit', async event => {
+          event.preventDefault();
+          const inputs = event.target.elements;
+
+          const email = inputs.email.value;
+          const password = inputs.password.value;
+          const name = inputs.name.value;
+
+          const { data, error } = await authClient.signUp.email({
+            email, // user email address
+            password, // user password -> min 8 characters by default
+            name, // user display name
+            // image, // User image URL (optional)
+            callbackURL: "/home" // A URL to redirect to after the user verifies their email (optional)
+          }, {
+              onRequest: (ctx) => {
+                  //show loading
+                console.info('Register request sent')
+              },
+              onSuccess: (ctx) => {
+                  //redirect to the dashboard or sign in page
+                router.navigate('/home');
+              },
+              onError: (ctx) => {
+                  // display the error message
+                  console.error(ctx);
+              },
+          });
+        });
+        break;
+
     }
 
     showSpinner(false);

@@ -13,18 +13,11 @@ dotenv.config();
 
 const app = express();
 
-// Per the Better Auth docs this must be above the express.json invocation
-app.all('/auth/*', toNodeHandler(auth));
-
 // Logging Middleware Declaration
 const logging = (request, response, next) => {
   console.log(`${request.method} ${request.url} ${new Date().toLocaleString("en-us")}`);
   next();
 };
-
-// Use the defined Middleware
-app.use(cors());
-app.use(express.json({limit: '2mb'}));
 
 const MONGODB = process.env.MONGODB ?? "mongodb://localhost/pizza";
 
@@ -43,8 +36,19 @@ app.get("/status", (request, response) => {
   response.send(JSON.stringify({ message: "Service running ok" }));
 });
 
+// Use the defined Middleware
+app.use(cors({
+  origin: "http://localhost:1234",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 // Moving the logging middleware to this location so that the logs on render.com are not filled up with status checks
 app.use(logging);
+
+// Per the Better Auth docs this must be above the express.json invocation
+app.all('/auth/*', toNodeHandler(auth));
+
+app.use(express.json({limit: '2mb'}));
 
 // Use the controllers
 app.use("/pizzas", pizzas);
@@ -52,7 +56,7 @@ app.use("/appointments", appointments);
 app.use("/drawings", drawings);
 app.use("/contacts", contacts);
 
-const PORT = process.env.PORT ?? 4040;
+const PORT = process.env.PORT ?? 3000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 export default app;

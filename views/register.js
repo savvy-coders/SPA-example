@@ -2,9 +2,13 @@ import html from "html-literal";
 
 export default state => {
   return html`
-    <form action="">
+    <form id="register-form">
       <div>
-        <label for=""></label>
+        <label for="name"></label>
+        <input id="name" name="name" type="text">
+      </div>
+      <div>
+        <label for="email"></label>
         <input id="email" name="email" type="email">
       </div>
       <div>
@@ -17,4 +21,3 @@ export default state => {
     </form>
   `;
 }
-  
