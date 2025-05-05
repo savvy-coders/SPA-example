@@ -1,4 +1,5 @@
 export default {
   header: "Schedule an Appointment",
-  view: "newAppointment"
+  view: "newAppointment",
+  access: "authenticated",
 };

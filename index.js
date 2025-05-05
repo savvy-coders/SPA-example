@@ -29,6 +29,8 @@ if (process.env.API_URL) {
 const router = new Navigo("/");
 
 function render(state = store.home) {
+  if (state?.access === "authenticated" && !store.global.isAuthenticated) state = store.signIn;
+
   document.querySelector("#root").innerHTML = `
     ${header(state)}
     ${nav(store.nav)}
@@ -73,8 +75,6 @@ router.hooks({
   // Use object deconstruction to store the data and (query)params from the Navigo match parameter
   // Runs before a route handler that the match is hasn't been visited already
   before: async (done, match) => {
-    console.info('router before hook has fired!');
-
     if (!process.env.API_URL) {
       confirm('Environment variable for API_URL is not defined, please add it to .env');
       exit()
@@ -204,7 +204,6 @@ router.hooks({
   },
   // Runs before a route handler that is already the match is already being visited
   already: async (match) => {
-    console.info('router already hook has fired!');
     const view = match?.data?.view ? camelCase(match.data.view) : "home";
 
     render(store[view]);
@@ -219,12 +218,9 @@ router.hooks({
     }
   },
   leave: async (done, match) => {
-    console.info('router leave hook has fired!');
-
     done();
   },
   after: async (match) => {
-    console.info('router after hook has fired!');
     const view = match?.data?.view ? camelCase(match.data.view) : "home";
     const id = match?.data?.id ? match.data.id : "";
 
@@ -496,14 +492,13 @@ router.hooks({
             password, // user password -> min 8 characters by default
             name, // user display name
             // image, // User image URL (optional)
-            callbackURL: "/home" // A URL to redirect to after the user verifies their email (optional)
+            callbackURL: "/sign-in" // A URL to redirect to after the user verifies their email (optional)
           }, {
               onRequest: (ctx) => {
                   //show loading
                 console.info('Register request sent')
               },
               onSuccess: (ctx) => {
-                  //redirect to the dashboard or sign in page
                 router.navigate('/home');
               },
               onError: (ctx) => {
@@ -513,7 +508,119 @@ router.hooks({
           });
         });
         break;
+      case "signIn":
+        document.getElementById('signin-form').addEventListener('submit', async event => {
+          event.preventDefault();
+          const inputs = event.target.elements;
 
+          const email = inputs.email.value;
+          const password = inputs.password.value;
+
+          const { data, error } = await authClient.signIn.email({
+            /**
+             * The user email
+             */
+            email,
+            /**
+             * The user password
+             */
+            password,
+            /**
+             * remember the user session after the browser is closed.
+             * @default true
+             */
+            rememberMe: false
+          }, {
+              onRequest: (ctx) => {
+                //show loading
+                console.info('Sign in request sent')
+              },
+              onSuccess: (ctx) => {
+                store.global.user = ctx.data.user;
+                store.global.token = ctx.data.token;
+                store.global.isAuthenticated = true;
+                router.navigate('/home');
+              },
+              onError: (ctx) => {
+                  store.global.user = null;
+                  store.global.token = null;
+                  store.global.isAuthenticated = false;
+                  // display the error message
+                  console.error(ctx);
+              },
+          });
+        });
+        break;
+      case "signOut":
+        await authClient.signOut({
+          fetchOptions: {
+            onSuccess: () => {
+              store.global.user = null;
+              store.global.token = null;
+              store.global.isAuthenticated = false;
+              router.navigate("/home"); // redirect to login page
+            },
+          },
+        });
+        break;
+      case "profile":
+        document.getElementById('profile-form').addEventListener('submit', async event => {
+          event.preventDefault();
+          const inputs = event.target.elements;
+          console.info("name", inputs.name.value)
+
+          await authClient.updateUser({
+            name: inputs.name.value
+          });
+
+          console.log('user', store.global.user)
+
+          store.global.user.name = inputs.name.value;
+
+          router.navigate("/home");
+        });
+        document.getElementById('changePassword').addEventListener('click', async event => {
+          event.preventDefault();
+
+          const submitButton = document.querySelector('input[type=submit]');
+          submitButton.disabled = true;
+          submitButton.classList.add('hidden');
+
+          document.getElementById('submitChangePassword').classList.remove("hidden");
+          document.getElementById('newPasswordContainer').classList.remove("hidden");
+          document.getElementById('name').disabled = true;
+          document.getElementById('password').removeAttribute('disabled');
+          document.getElementById('changePassword').classList.add('hidden');
+        });
+        document.getElementById('submitChangePassword').addEventListener('click', async event => {
+          event.preventDefault();
+
+          const newPassword = document.getElementById('newPassword').value;
+          const currentPassword = document.getElementById('password').value;
+
+          await authClient.changePassword({
+            newPassword,
+            currentPassword,
+            revokeOtherSessions: true, // revoke all other sessions the user is signed into
+          });
+
+          store.global.user = null;
+          store.global.token = null;
+          store.global.isAuthenticated = false;
+
+          router.navigate('/sign-in');
+        });
+        document.getElementById('validateEmail').addEventListener('click', async event => {
+          event.preventDefault();
+
+          const email = document.getElementById('email').value;
+
+          await authClient.sendVerificationEmail({
+            email,
+            callbackURL: process.env.BETTER_AUTH_CLIENT_URL
+          });
+        });
+        break;
     }
 
     showSpinner(false);

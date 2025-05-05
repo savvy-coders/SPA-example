@@ -46,6 +46,10 @@ dialog>pre {
   text-align: center;
 }
 
+.hidden {
+  display: none;
+}
+
 #spinner-component {
   visibility: hidden;
 }
@@ -120,6 +124,7 @@ dialog>pre {
     display: flex;
     align-items: center;
     flex-direction: column;
+    background-color: gray;
   }
 
   nav>i {
@@ -149,24 +154,28 @@ dialog>pre {
 @media (min-width: 550px) {
   nav>ul {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     padding: 0 0;
+    border-bottom: 1px solid grey;
+    /* background-color: lightgray; */
   }
 
   nav>ul>li {
     display: inline-block;
     text-decoration: none;
-    border: 1px solid;
+    border-left: 1px solid grey;
+    /* border-bottom: 1px solid grey; */
     padding: 0.5rem 0.5rem;
-    border-radius: 25px;
+    /* border-radius: 25px; */
   }
 
   nav>ul>li:hover {
-    border: 1px blue solid;
+    border: 0;
+    background-color: grey;
   }
 
-  nav>ul>li :hover {
-    color: red;
+  nav>ul>li:hover a {
+    color: white;
   }
 
   nav>.fa-bars {

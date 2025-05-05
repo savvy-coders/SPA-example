@@ -9,6 +9,8 @@ export { default as leaflet } from "./leaflet";
 export { default as newAppointment } from "./newAappointment";
 export { default as order } from "./order";
 export { default as pizza } from "./pizza";
+export { default as profile } from "./profile";
 export { default as register } from "./register";
+export { default as signIn } from "./signIn";
+export { default as signOut } from "./signOut";
 export { default as viewNotFound } from "./viewNotFound";
-

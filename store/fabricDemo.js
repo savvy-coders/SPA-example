@@ -3,5 +3,6 @@ export default {
   view: "fabricDemo",
   drawing: {},
   canvas: {}, // Store the Fabric canvas so it can be used elsewhere in the SPA,
-  history: []
+  history: [],
+  access: "authenticated",
 };
