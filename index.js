@@ -564,62 +564,71 @@ router.hooks({
         });
         break;
       case "profile":
-        document.getElementById('profile-form').addEventListener('submit', async event => {
-          event.preventDefault();
-          const inputs = event.target.elements;
-          console.info("name", inputs.name.value)
+        const profileForm = document.getElementById('profile-form');
+        if (profileForm) {
+          profileForm.addEventListener('submit', async event => {
+            event.preventDefault();
+            const inputs = event.target.elements;
+            console.info("name", inputs.name.value)
 
-          await authClient.updateUser({
-            name: inputs.name.value
+            await authClient.updateUser({
+              name: inputs.name.value
+            });
+
+            console.log('user', store.global.user)
+
+            store.global.user.name = inputs.name.value;
+
+            router.navigate("/home");
+          });
+          document.getElementById('changePassword').addEventListener('click', async event => {
+            event.preventDefault();
+
+            const submitButton = document.querySelector('input[type=submit]');
+            submitButton.disabled = true;
+            submitButton.classList.add('hidden');
+
+            document.getElementById('submitChangePassword').classList.remove("hidden");
+            document.getElementById('newPasswordContainer').classList.remove("hidden");
+            document.getElementById('name').disabled = true;
+            document.getElementById('password').removeAttribute('disabled');
+            document.getElementById('changePassword').classList.add('hidden');
           });
 
-          console.log('user', store.global.user)
+          document.getElementById('submitChangePassword').addEventListener('click', async event => {
+            event.preventDefault();
 
-          store.global.user.name = inputs.name.value;
+            const newPassword = document.getElementById('newPassword').value;
+            const currentPassword = document.getElementById('password').value;
 
-          router.navigate("/home");
-        });
-        document.getElementById('changePassword').addEventListener('click', async event => {
-          event.preventDefault();
+            await authClient.changePassword({
+              newPassword,
+              currentPassword,
+              revokeOtherSessions: true, // revoke all other sessions the user is signed into
+            });
 
-          const submitButton = document.querySelector('input[type=submit]');
-          submitButton.disabled = true;
-          submitButton.classList.add('hidden');
+            store.global.user = null;
+            store.global.token = null;
+            store.global.isAuthenticated = false;
 
-          document.getElementById('submitChangePassword').classList.remove("hidden");
-          document.getElementById('newPasswordContainer').classList.remove("hidden");
-          document.getElementById('name').disabled = true;
-          document.getElementById('password').removeAttribute('disabled');
-          document.getElementById('changePassword').classList.add('hidden');
-        });
-        document.getElementById('submitChangePassword').addEventListener('click', async event => {
-          event.preventDefault();
-
-          const newPassword = document.getElementById('newPassword').value;
-          const currentPassword = document.getElementById('password').value;
-
-          await authClient.changePassword({
-            newPassword,
-            currentPassword,
-            revokeOtherSessions: true, // revoke all other sessions the user is signed into
+            router.navigate('/sign-in');
           });
 
-          store.global.user = null;
-          store.global.token = null;
-          store.global.isAuthenticated = false;
+          const validateEmailButton = document.getElementById('validateEmail');
+          if (validateEmailButton) {
+            validateEmailButton.addEventListener('click', async event => {
+              event.preventDefault();
 
-          router.navigate('/sign-in');
-        });
-        document.getElementById('validateEmail').addEventListener('click', async event => {
-          event.preventDefault();
+              const email = document.getElementById('email').value;
 
-          const email = document.getElementById('email').value;
-
-          await authClient.sendVerificationEmail({
-            email,
-            callbackURL: process.env.BETTER_AUTH_CLIENT_URL
-          });
-        });
+              await authClient.sendVerificationEmail({
+                email,
+                // TODO: This is not working as expected
+                callbackURL: process.env.BETTER_AUTH_CLIENT_URL
+              });
+            });
+          }
+        }
         break;
     }
 
