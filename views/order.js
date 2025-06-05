@@ -5,7 +5,6 @@ import { toppingInput } from "../components";
 export default state => {
   return html`
     <form id="order" method="POST" action="">
-      <h2>Order a pizza</h2>
       <div>
         <label for="customer">Customer Name:</label>
         <input type="text" name="customer" id="customer" placeholder="Enter Name" required/>

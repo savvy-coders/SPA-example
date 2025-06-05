@@ -1,5 +1,5 @@
 export default {
-  header: "Leaflet",
+  header: "Leaflet Example",
   view: "leaflet",
   parks: []
 };
