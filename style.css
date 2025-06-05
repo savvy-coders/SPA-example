@@ -94,7 +94,9 @@ dialog>pre {
   border-radius: 0.5rem;
   cursor: pointer;
   text-align: center;
-  background-color: lightgray;
+  background-color: #07c4dd;
+  color: white;
+  text-decoration: none;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 

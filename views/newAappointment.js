@@ -7,7 +7,6 @@ defaultEndDate.setHours(defaultStartDate.getHours() + 1);
 export default () => html`
   <section id="schedule">
     <form id="schedule-form">
-      <h2>Create an Appointment</h2>
       <div>
         <label for="title">Appointment Title</label>
         <input
@@ -22,25 +21,23 @@ export default () => html`
         <label for="allDay">All Day Event</label>
         <input type="checkbox" name="allDay" id="allDay" />
       </div>
-      <div id="timeInputs">
-        <div>
-          <label for="start">Start Date/Time</label>
-          <input
-            id="start"
-            name="start"
-            type="datetime-local"
-            value="${defaultStartDate.toJSON().substring(0, 16)}"
-          />
-        </div>
-        <div>
-          <label for="end">End Date/Time</label>
-          <input
-            id="end"
-            name="end"
-            type="datetime-local"
-            value="${defaultEndDate.toJSON().substring(0, 16)}"
-          />
-        </div>
+      <div>
+        <label for="start">Start Date/Time</label>
+        <input
+          id="start"
+          name="start"
+          type="datetime-local"
+          value="${defaultStartDate.toJSON().substring(0, 16)}"
+        />
+      </div>
+      <div>
+        <label for="end">End Date/Time</label>
+        <input
+          id="end"
+          name="end"
+          type="datetime-local"
+          value="${defaultEndDate.toJSON().substring(0, 16)}"
+        />
       </div>
 
       <input type="submit" name="submit" value="Schedule" />

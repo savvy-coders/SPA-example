@@ -1,5 +1,5 @@
 export default {
-  header: "Fabric Drawings",
+  header: "Fabric JS Drawings",
   view: "drawings",
   drawings: []
 };
