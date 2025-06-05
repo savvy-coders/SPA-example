@@ -13,8 +13,6 @@ import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 
-import markerIcon from "./node_modules/leaflet/dist/images/marker-icon.png";
-
 let API_URL;
 
 if (process.env.API_URL) {
@@ -39,6 +37,7 @@ function render(state = store.home) {
 
 function handleEventDragResize(info) {
   const event = info.event;
+  console.dir(event)
 
   const start = event.start.toJSON();
   const end = event.allDay ? start : event.end.toJSON();
