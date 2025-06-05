@@ -474,8 +474,8 @@ router.hooks({
           const response = await axios.post(`${process.env.API_URL}/contacts`, requestData);
 
           // Store the individual and collection for later use
-          store.contacts.contact = response.data;
-          store.contacts.contacts.push(response.data);
+          store.contact.contact = response.data;
+          store.contact.contacts.push(response.data);
 
           router.navigate("/");
         });
