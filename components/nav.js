@@ -4,7 +4,7 @@ import navItem from "./navItem.js";
 
 export default navItems => {
   return html`
-    <nav>
+    <nav class="navbar">
       <i class="fas fa-bars"></i>
       <ul class="hidden--mobile nav-links">
         ${navItems.map(item => navItem(item)).join("")}
