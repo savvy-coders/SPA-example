@@ -4,9 +4,8 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "build": "parcel build index.html",
-    "deploy": "parcel build index.html && cp ./netlify/_redirects ./dist/",
-    "serve": "parcel index.html",
+    "build": "parcel build index.html && cp ./netlify/_redirects ./dist/",
+    "start": "parcel index.html",
     "app:watch": "nodemon --watch ./server -e js server/app.js",
     "be:test": "npx jasmine",
     "fe:test": "npx cypress run"
